@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HouseHunt – Find Your Perfect Rental</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #F7F2EA;
+    --cream-dark: #EDE5D8;
+    --olive: #2B3A2C;
+    --olive-light: #3E5240;
+    --terracotta: #C4622A;
+    --terracotta-light: #E07A45;
+    --gold: #C9A84C;
+    --charcoal: #1C1C1C;
+    --mid: #6B6560;
+    --light: #A09890;
+    --white: #FDFAF6;
+    --card-bg: #FFFFFF;
+    --border: #E2D9CE;
+  }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 3rem;
+    height: 68px;
+    background: var(--olive);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-dot {
+    width: 8px; height: 8px;
+    background: var(--terracotta);
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .nav-links {
+    display: flex; gap: 2.2rem; list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(247,242,234,0.7);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cream); }
+  .nav-cta {
+    background: var(--terracotta);
+    color: var(--cream);
+    border: none;
+    padding: 9px 22px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--terracotta-light); }
+
+  /* HERO */
+  .hero {
+    margin-top: 68px;
+    padding: 6rem 3rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    min-height: calc(90vh - 68px);
+    background: var(--olive);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    right: -80px; top: -80px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    border: 1px solid rgba(247,242,234,0.08);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: 40px; top: 40px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    border: 1px solid rgba(247,242,234,0.05);
+  }
+  .hero-left { position: relative; z-index: 2; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--gold);
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--terracotta-light);
+  }
+  .hero-sub {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: rgba(247,242,234,0.65);
+    line-height: 1.8;
+    max-width: 420px;
+    margin-bottom: 2.5rem;
+  }
+  .hero-stats {
+    display: flex; gap: 2.5rem;
+  }
+  .hero-stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .hero-stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(247,242,234,0.5);
+    margin-top: 2px;
+  }
+
+  /* SEARCH CARD */
+  .search-card {
+    background: var(--white);
+    padding: 2rem 2rem 2.2rem;
+    position: relative; z-index: 2;
+  }
+  .search-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    margin-bottom: 1.5rem;
+  }
+  .search-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .field-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 6px;
+  }
+  .field-input, .field-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    background: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.88rem;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+  .field-input:focus, .field-select:focus { border-color: var(--terracotta); }
+  .field-input::placeholder { color: var(--light); }
+  .search-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+  }
+  .search-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--terracotta);
+    color: var(--white);
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .search-btn:hover { background: #B55520; }
+  .search-btn svg { width: 16px; height: 16px; }
+
+  /* PROPERTIES SECTION */
+  .section {
+    padding: 5rem 3rem;
+  }
+  .section-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 2.5rem;
+  }
+  .section-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    line-height: 1.15;
+  }
+  .section-title em { font-style: italic; color: var(--olive); }
+  .view-all {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--olive);
+    text-decoration: none;
+    border-bottom: 1px solid var(--olive);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .view-all:hover { color: var(--terracotta); border-color: var(--terracotta); }
+  .filter-tabs {
+    display: flex; gap: 0; margin-bottom: 2rem;
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+  .filter-tab {
+    padding: 8px 22px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: var(--mid);
+    transition: all 0.2s;
+    border-right: 1px solid var(--border);
+  }
+  .filter-tab:last-child { border-right: none; }
+  .filter-tab.active { background: var(--olive); color: var(--cream); }
+  .filter-tab:hover:not(.active) { background: var(--cream-dark); }
+
+  /* PROPERTY CARDS */
+  .properties-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .property-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.25s, border-color 0.25s;
+    cursor: pointer;
+    position: relative;
+  }
+  .property-card:hover { transform: translateY(-4px); border-color: var(--terracotta); }
+  .property-card.featured {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .card-image {
+    position: relative;
+    overflow: hidden;
+  }
+  .property-card:not(.featured) .card-image {
+    aspect-ratio: 4/3;
+  }
+  .property-card.featured .card-image {
+    height: 100%;
+    min-height: 300px;
+  }
+  .card-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+    display: block;
+  }
+  .property-card:hover .card-img { transform: scale(1.04); }
+  .card-badge {
+    position: absolute; top: 12px; left: 12px;
+    padding: 4px 12px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .badge-available { background: var(--olive); color: var(--cream); }
+  .badge-featured { background: var(--terracotta); color: white; }
+  .badge-new { background: var(--gold); color: var(--charcoal); }
+  .card-body { padding: 1.4rem; }
+  .card-type {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 6px;
+  }
+  .card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .property-card.featured .card-name { font-size: 1.6rem; }
+  .card-loc {
+    font-size: 0.8rem;
+    color: var(--light);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .card-loc svg { width: 12px; height: 12px; color: var(--terracotta); flex-shrink: 0; }
+  .card-amenities {
+    display: flex; gap: 1.2rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .amenity {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 0.78rem;
+    color: var(--mid);
+  }
+  .amenity svg { width: 13px; height: 13px; color: var(--olive); flex-shrink: 0; }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--charcoal);
+  }
+  .card-price span {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--mid);
+  }
+  .book-btn {
+    padding: 8px 18px;
+    background: transparent;
+    border: 1px solid var(--olive);
+    color: var(--olive);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .book-btn:hover { background: var(--olive); color: var(--cream); }
+  .save-btn {
+    position: absolute; top: 12px; right: 12px;
+    width: 34px; height: 34px;
+    background: rgba(247,242,234,0.9);
+    border: none;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .save-btn:hover { background: white; }
+  .save-btn svg { width: 15px; height: 15px; color: var(--terracotta); }
+
+  /* BANNER STRIP */
+  .stats-strip {
+    background: var(--charcoal);
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    text-align: center;
+  }
+  .strip-stat {}
+  .strip-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: var(--cream);
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .strip-label {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(247,242,234,0.45);
+  }
+
+  /* DASHBOARD PREVIEW */
+  .dashboard-section {
+    background: var(--olive);
+    padding: 5rem 3rem;
+  }
+  .dashboard-section .section-title { color: var(--cream); }
+  .dashboard-section .section-eyebrow { color: var(--gold); }
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .dash-panel {
+    background: rgba(247,242,234,0.06);
+    border: 1px solid rgba(247,242,234,0.12);
+    padding: 1.5rem;
+  }
+  .dash-panel-title {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(247,242,234,0.5);
+    margin-bottom: 1.2rem;
+  }
+  .dash-metric {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(247,242,234,0.08);
+  }
+  .dash-metric:last-child { border-bottom: none; }
+  .dash-metric-label { font-size: 0.85rem; color: rgba(247,242,234,0.7); font-weight: 300; }
+  .dash-metric-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .dash-metric-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    letter-spacing: 0.06em;
+  }
+  .badge-up { background: rgba(62,82,64,0.5); color: #7EC880; }
+  .badge-down { background: rgba(196,98,42,0.25); color: #F0956A; }
+
+  /* Bookings table */
+  .bookings-table { width: 100%; }
+  .bookings-table th {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(247,242,234,0.4);
+    padding: 0 0 10px;
+    text-align: left;
+    border-bottom: 1px solid rgba(247,242,234,0.1);
+  }
+  .bookings-table td {
+    padding: 12px 0;
+    font-size: 0.82rem;
+    color: rgba(247,242,234,0.8);
+    border-bottom: 1px solid rgba(247,242,234,0.06);
+    font-weight: 300;
+  }
+  .status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .status-confirmed { background: rgba(62,82,64,0.4); color: #7EC880; }
+  .status-pending { background: rgba(201,168,76,0.2); color: var(--gold); }
+  .status-reviewing { background: rgba(247,242,234,0.1); color: rgba(247,242,234,0.5); }
+
+  /* FOOTER */
+  footer {
+    background: var(--charcoal);
+    padding: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(247,242,234,0.06);
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .footer-copy {
+    font-size: 0.75rem;
+    color: rgba(247,242,234,0.35);
+    letter-spacing: 0.04em;
+  }
+  .footer-links {
+    display: flex; gap: 1.8rem; list-style: none;
+  }
+  .footer-links a {
+    font-size: 0.75rem;
+    color: rgba(247,242,234,0.4);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--cream); }
+
+  /* ANIMATIONS */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-left > * { animation: fadeInUp 0.6s ease both; }
+  .hero-tag { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.2s; }
+  .hero-sub { animation-delay: 0.3s; }
+  .hero-stats { animation-delay: 0.4s; }
+  .search-card { animation: fadeInUp 0.6s 0.3s ease both; }
+
+  @media (max-width: 1024px) {
+    .hero { grid-template-columns: 1fr; padding: 4rem 2rem 3rem; }
+    .properties-grid { grid-template-columns: repeat(2, 1fr); }
+    .property-card.featured { grid-column: span 2; }
+    .dash-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links, .nav-cta { display: none; }
+    .section { padding: 3rem 1.5rem; }
+    .properties-grid { grid-template-columns: 1fr; }
+    .property-card.featured { grid-column: span 1; display: block; }
+    .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span class="logo-dot"></span>
+    HouseHunt
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Explore</a></li>
+    <li><a href="#">Properties</a></li>
+    <li><a href="#">Landlords</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+  <button class="nav-cta">List Property</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Premium Rentals Platform</div>
+    <h1>Find your<br><em>perfect home</em><br>to rent</h1>
+    <p class="hero-sub">Discover curated rental properties across the city. From cozy studios to luxury penthouses — real-time availability, instant booking.</p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">3.2k+</div>
+        <div class="hero-stat-label">Active Listings</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">98%</div>
+        <div class="hero-stat-label">Verified Landlords</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">12k</div>
+        <div class="hero-stat-label">Happy Tenants</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH CARD -->
+  <div class="search-card">
+    <h2 class="search-title">Search Properties</h2>
+    <div class="field-label">Location</div>
+    <input type="text" class="field-input" placeholder="City, neighbourhood, or pincode" style="width:100%; margin-bottom:1rem;">
+    <div class="search-grid">
+      <div>
+        <div class="field-label">Min Price</div>
+        <select class="field-select">
+          <option>₹ 5,000</option>
+          <option>₹ 10,000</option>
+          <option>₹ 15,000</option>
+          <option>₹ 25,000</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Max Price</div>
+        <select class="field-select">
+          <option>₹ 30,000</option>
+          <option>₹ 50,000</option>
+          <option>₹ 75,000</option>
+          <option>₹ 1,00,000+</option>
+        </select>
+      </div>
+    </div>
+    <div class="search-row">
+      <div>
+        <div class="field-label">Type</div>
+        <select class="field-select">
+          <option>Any Type</option>
+          <option>Apartment</option>
+          <option>House</option>
+          <option>Villa</option>
+          <option>Studio</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Bedrooms</div>
+        <select class="field-select">
+          <option>Any</option>
+          <option>1 BHK</option>
+          <option>2 BHK</option>
+          <option>3 BHK</option>
+          <option>4+ BHK</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Furnishing</div>
+        <select class="field-select">
+          <option>Any</option>
+          <option>Furnished</option>
+          <option>Semi</option>
+          <option>Unfurnished</option>
+        </select>
+      </div>
+    </div>
+    <button class="search-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Search Properties
+    </button>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="strip-stat">
+    <span class="strip-num">3,240</span>
+    <span class="strip-label">Active Listings</span>
+  </div>
+  <div class="strip-stat">
+    <span class="strip-num">18</span>
+    <span class="strip-label">Cities Covered</span>
+  </div>
+  <div class="strip-stat">
+    <span class="strip-num">₹8.4Cr</span>
+    <span class="strip-label">Rent Processed</span>
+  </div>
+  <div class="strip-stat">
+    <span class="strip-num">4.9★</span>
+    <span class="strip-label">Avg. Rating</span>
+  </div>
+</div>
+
+<!-- PROPERTIES -->
+<section class="section" style="background: var(--cream);">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">Browse Listings</div>
+      <h2 class="section-title">Featured <em>Properties</em></h2>
+    </div>
+    <a href="#" class="view-all">View All →</a>
+  </div>
+
+  <div class="filter-tabs">
+    <button class="filter-tab active">All</button>
+    <button class="filter-tab">Apartment</button>
+    <button class="filter-tab">House</button>
+    <button class="filter-tab">Villa</button>
+    <button class="filter-tab">Studio</button>
+  </div>
+
+  <div class="properties-grid">
+
+    <!-- FEATURED CARD -->
+    <div class="property-card featured">
+      <div class="card-image">
+        <img class="card-img" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=75" alt="Luxury Villa">
+        <span class="card-badge badge-featured">Featured</span>
+        <button class="save-btn" aria-label="Save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body" style="display:flex;flex-direction:column;justify-content:center;">
+        <div class="card-type">Premium Villa · Gated Community</div>
+        <div class="card-name">The Prestige Meridian<br>Villa Estate</div>
+        <div class="card-loc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Jubilee Hills, Hyderabad
+        </div>
+        <div class="card-amenities">
+          <div class="amenity">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            4 BHK
+          </div>
+          <div class="amenity">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07C9.36 17.64 7.36 15.64 6.08 13.36A19.79 19.79 0 0 1 3 4.74 2 2 0 0 1 4.95 2.55h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.91 9.91A16 16 0 0 0 16 16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 24 17z"/></svg>
+            4 Baths
+          </div>
+          <div class="amenity">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Fully Furnished
+          </div>
+          <div class="amenity">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+            4,200 sq.ft
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">₹85,000 <span>/ month</span></div>
+          <button class="book-btn">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="property-card">
+      <div class="card-image">
+        <img class="card-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&q=75" alt="Modern Apartment">
+        <span class="card-badge badge-new">New</span>
+        <button class="save-btn" aria-label="Save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-type">Apartment · High Rise</div>
+        <div class="card-name">Skyline Residences, Tower C</div>
+        <div class="card-loc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Gachibowli, Hyderabad
+        </div>
+        <div class="card-amenities">
+          <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>3 BHK</div>
+          <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ready</div>
+          <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Semi-furnished</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">₹32,000 <span>/ month</span></div>
+          <button class="book-btn">Book</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="property-card">
+      <div class="card-image">
+        <img class="card-img" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=500&q=75" alt="Studio">
+        <span class="card-badge badge-available">Available</span>
+        <button class="save-btn" aria-label="Save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-type">Studio · Compact Living</div>
+        <div class="card-name">Urban Nest Banjara Hills</div>
+        <div class="card-loc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Banjara Hills, Hyderabad
+        </div>
+        <div class="card-amenities">
+          <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Studio</div>
+          <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/></svg>1 Bath</div>
+          <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Furnished</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">₹14,500 <span>/ month</span></div>
+          <button class="book-btn">Book</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="property-card">
+      <div class="card-image">
+        <img class="card-img" src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=500&q=75" alt="House">
+        <span class="card-badge badge-available">Available</span>
+        <button class="save-btn" aria-label="Save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-type">Independent House</div>
+        <div class="card-name">Green Meadows Cottage, Plot 12</div>
+        <div class="card-loc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Kondapur, Hyderabad
+        </div>
+        <div class="card-amenities">
+          <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>3 BHK</div>
+          <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2"/></svg>2 Baths</div>
+          <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/></svg>1,800 sq.ft</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">₹28,000 <span>/ month</span></div>
+          <button class="book-btn">Book</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ADMIN DASHBOARD PREVIEW -->
+<section class="dashboard-section">
+  <div class="section-eyebrow">Platform Dashboard</div>
+  <h2 class="section-title">Admin & Tenant <em>Analytics</em></h2>
+  <div class="dash-grid">
+    <div>
+      <div class="dash-panel">
+        <div class="dash-panel-title">Property Overview</div>
+        <div class="dash-metric">
+          <span class="dash-metric-label">Total Listings</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="dash-metric-val">3,240</span>
+            <span class="dash-metric-badge badge-up">+12%</span>
+          </div>
+        </div>
+        <div class="dash-metric">
+          <span class="dash-metric-label">Active Tenants</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="dash-metric-val">1,842</span>
+            <span class="dash-metric-badge badge-up">+8%</span>
+          </div>
+        </div>
+        <div class="dash-metric">
+          <span class="dash-metric-label">Pending Reviews</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="dash-metric-val">67</span>
+            <span class="dash-metric-badge badge-down">-3</span>
+          </div>
+        </div>
+        <div class="dash-metric">
+          <span class="dash-metric-label">Occupancy Rate</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="dash-metric-val">91.4%</span>
+            <span class="dash-metric-badge badge-up">+2.1%</span>
+          </div>
+        </div>
+        <div class="dash-metric">
+          <span class="dash-metric-label">Revenue (Month)</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="dash-metric-val">₹2.1Cr</span>
+            <span class="dash-metric-badge badge-up">+18%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="dash-panel">
+        <div class="dash-panel-title">Recent Bookings</div>
+        <table class="bookings-table">
+          <thead>
+            <tr>
+              <th>Tenant</th>
+              <th>Property</th>
+              <th>Rent</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ananya Sharma</td>
+              <td>Skyline C-403</td>
+              <td>₹32,000</td>
+              <td><span class="status-pill status-confirmed">Confirmed</span></td>
+            </tr>
+            <tr>
+              <td>Rohan Mehta</td>
+              <td>Urban Nest B-12</td>
+              <td>₹14,500</td>
+              <td><span class="status-pill status-pending">Pending</span></td>
+            </tr>
+            <tr>
+              <td>Priya Reddy</td>
+              <td>Prestige Villa</td>
+              <td>₹85,000</td>
+              <td><span class="status-pill status-confirmed">Confirmed</span></td>
+            </tr>
+            <tr>
+              <td>Karan Joshi</td>
+              <td>Green Meadows 12</td>
+              <td>₹28,000</td>
+              <td><span class="status-pill status-reviewing">Reviewing</span></td>
+            </tr>
+            <tr>
+              <td>Sneha Rao</td>
+              <td>Skyline A-209</td>
+              <td>₹30,000</td>
+              <td><span class="status-pill status-pending">Pending</span></td>
+            </tr>
+            <tr>
+              <td>Vikram Singh</td>
+              <td>Urban Nest D-05</td>
+              <td>₹15,000</td>
+              <td><span class="status-pill status-confirmed">Confirmed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">HouseHunt</div>
+  <ul class="footer-links">
+    <li><a href="#">Properties</a></li>
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 HouseHunt. All rights reserved.</div>
+</footer>
+
+<script>
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.save-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const svg = btn.querySelector('svg');
+      const filled = svg.getAttribute('fill') === 'currentColor';
+      svg.setAttribute('fill', filled ? 'none' : 'currentColor');
+    });
+  });
+</script>
+</body>
+</html>
